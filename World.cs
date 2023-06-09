@@ -36,27 +36,60 @@ namespace World
             Built = BuildWorld();
             if (Built)
             {
-                PlaceLoudRooms();
-                PlaceMonsters();
+                InstantiateLoudRooms();
+                if (LoudRooms != null)
+                {
+                    PlaceLoudRooms();
+                    PlaceMonsters();
+                }
+                else
+                {
+                    throw new Exception("Failed to instantiate room list.");
+                }
             }
         }
 
         private void PlaceMonsters()
         {
-            int numAmaroks = GetAmarokCount();
-
-            InstantiateLoudRooms();
-
-            for (int amarokIndex = 0; amarokIndex < numAmaroks; amarokIndex++)
+            List<Monster> monsterList = EnumerateMonsters();
+            
+            foreach (Monster monster in monsterList)
             {
-                Room room = GetRandomEmptyRoom(true);
-                MonsterAmarok amarok = new MonsterAmarok();
-                room.Monster = amarok;
+                Room room = GetRandomEmptyRoom();
+                room.Monster = monster;
                 LoudRooms.Add(room);
             }
+
         }
 
-        private Room GetRandomEmptyRoom(bool withoutMonsters)
+        private List<Monster> EnumerateMonsters()
+        {
+            List<Monster> monsterList = new List<Monster>();
+
+            int numAmaroks = GetAmarokCount();
+            int numMaelstroms = GetMaelstromCount();
+
+            for (int i = 0; i < numAmaroks; i++)
+            {
+                monsterList.Add(new MonsterAmarok());
+            }
+
+            for (int i = 0; i < numMaelstroms; i++)
+            {
+                monsterList.Add(new MonsterMaelstrom());
+            }
+
+            return monsterList;
+        }
+
+        public Room GetRandomRoom()
+        {
+            int x = Utilities.rand.Next(0, Size);
+            int y = Utilities.rand.Next(0, Size);
+            return GetRoom(x, y);
+        }
+
+        public Room GetRandomEmptyRoom(bool withoutMonsters = true)
         {
             int x = 0;
             int y = 0;
@@ -91,6 +124,24 @@ namespace World
             }
         }
 
+        private int GetMaelstromCount()
+        {
+            const int SMALL_MAELSTROMS = 1;
+            const int MEDIUM_MAELSTROMS = 2;
+            const int LARGe_MAELSTROMS = 3;
+
+            switch (_worldSize)
+            {
+                case WorldSize.Small:
+                default:
+                    return SMALL_MAELSTROMS;
+                case WorldSize.Medium:
+                    return MEDIUM_MAELSTROMS;
+                case WorldSize.Large:
+                    return LARGe_MAELSTROMS;
+            }
+        }
+
 
         private void PlaceLoudRooms()
         {
@@ -102,8 +153,6 @@ namespace World
             int y = 0;
 
             int pitCount = Math.Clamp(Size - PIT_LIMITER, MIN_PITS, MAX_PITS);
-
-            InstantiateLoudRooms();
 
             for (int pitIndex = 0; pitIndex < pitCount; pitIndex++)
             {
