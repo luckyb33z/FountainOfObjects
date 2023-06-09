@@ -1,25 +1,25 @@
 using System;
 
-namespace Feature
+namespace Terrain
 {
     using Utilities;
     using IDescriptive;
 
-    abstract class Feature: IDescriptive
+    abstract class Terrain: IDescriptive
     {
         virtual public string InRoomDescription { get; set; } 
         virtual public ConsoleColor DescColor { get; set; }
     }
 
-    abstract class LoudFeature: Feature, IDescriptiveNoisy
+    abstract class TerrainNoisy: Terrain, IDescriptiveNoisy
     {
         virtual public string AdjacentDescription { get; set; }
         virtual public int PerceptibleDistance { get; set; } = 1;
     }
 
-    class LoudFeaturePit: LoudFeature
+    class TerrainNoisyPit: TerrainNoisy
     {
-        public LoudFeaturePit()
+        public TerrainNoisyPit()
         {
             InRoomDescription = "Oh no! There's no floor below you!";
             AdjacentDescription = "You feel a draft. There is a pit in a nearby room.";
@@ -27,16 +27,16 @@ namespace Feature
         }
     }
 
-    class FeatureEntrance: Feature
+    class TerrainEntrance: Terrain
     {
-        public FeatureEntrance()
+        public TerrainEntrance()
         {
             InRoomDescription = "You see light coming from the cavern entrance.";
             DescColor = TermColors.LightColor;
         }
     }
 
-    class FeatureFountain: Feature
+    class TerrainFountain: Terrain
     {
         public bool Active { get; private set; }
 
@@ -46,7 +46,7 @@ namespace Feature
             Active = true;
         }
 
-        public FeatureFountain()
+        public TerrainFountain()
         {
             InRoomDescription = "You hear water dripping in this room. The Fountain of Objects is here!";
             DescColor = TermColors.WaterColor;
