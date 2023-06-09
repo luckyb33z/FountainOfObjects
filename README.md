@@ -6,9 +6,9 @@ Current Expansions:
 1. Small, Medium, or Large
 2. Pits
 3. Amaroks
+4. Maelstroms
 
 To-do:
 
-4. Maelstroms
 5. Getting Armed
 6. Getting Help
