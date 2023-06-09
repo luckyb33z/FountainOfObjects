@@ -3,17 +3,18 @@ using System;
 namespace Feature
 {
     using Utilities;
-    
-    abstract class Feature
+    using IDescriptive;
+
+    abstract class Feature: IDescriptive
     {
-        public string InRoomDescription { get; protected set; } 
-        public ConsoleColor DescColor { get; protected set; }
+        public string InRoomDescription { get; set; } 
+        public ConsoleColor DescColor { get; set; }
     }
 
-    abstract class LoudFeature: Feature
+    abstract class LoudFeature: Feature, IDescriptiveNoisy
     {
-        public string AdjacentDescription { get; protected set; }
-        public int PerceptibleDistance { get; protected set; }
+        public string AdjacentDescription { get; set; }
+        public int PerceptibleDistance { get; set; }
     }
 
     class LoudFeaturePit: LoudFeature
