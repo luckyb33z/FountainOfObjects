@@ -13,21 +13,6 @@ namespace FountainOfObjects
     public class GameMaster
     {
 
-        enum EndState
-        {
-            Victory,
-            Surrender,
-            Defeat
-        }
-
-        enum Direction
-        {
-            North,
-            South,
-            West,
-            East
-        }
-
         World world;
         Player player;
 
