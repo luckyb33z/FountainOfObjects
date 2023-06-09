@@ -5,6 +5,7 @@ using Enums;
 namespace FountainOfObjects
 {
     using IDescriptive;
+    using Player;
     using Utilities;
     using Utilities.Exceptions;
     using World;
@@ -16,6 +17,7 @@ namespace FountainOfObjects
         World world;
         Player player;
 
+        private bool RoomReacting { get; set; } = false;
         public bool Playing { get; private set; } = false;
 
         public void PlayGame(int worldSize)
@@ -84,48 +86,90 @@ namespace FountainOfObjects
         private void StartAdventure()
         {
             Console.Clear();
-            string divider = "----------------------------------------";
             
             while (Playing)
-            {
-                Console.WriteLine(divider);
-                PrintLocation();
-                PrintCurrentRoomDescription();
-
-                if (CheckForFailure())
+            {   
+                RoomReacting = true;
+                while (RoomReacting)
                 {
-                    Playing = false;
-                    break;
+                    ReportLocation();
+                    RoomReacting = DoRoomReactions();  // This while loop will allow for repeated messages in the event of multi-maelstrom; it's almost recursive
                 }
 
-                PrintAdjacentRoomDescriptions();
-                string command = AskForCommand();
-                ProcessCommand(command);
-                CheckForVictory();
+                if (player.Thrown)
+                {
+                    ReportLocation();
+                    player.Thrown = false;
+                }
+
+                if (!IsGameOver())
+                {
+                    PrintAdjacentRoomDescriptions();
+                    string command = AskForCommand();
+                    ProcessCommand(command);
+                    CheckForVictory();
+                }
             }
         }
 
-        private bool CheckForFailure()
+        private void ReportLocation()
+        {
+            const string divider = "----------------------------------------";
+            Console.WriteLine(divider);
+            PrintLocation();
+            PrintCurrentRoomDescription();
+        }
+
+        private bool IsGameOver()
+        {
+            if (player.Dead || !Playing)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool DoRoomReactions()
         {
             if (player.CurrentRoom is PitRoom)
             {
                 QuitGame(EndState.Defeat);
-                return true;
             }
-            
-            if (player.CurrentRoom.Monster != null)
+            else if (player.CurrentRoom.Monster != null)
             {
                 switch (player.CurrentRoom.Monster.Reaction)
                 {
-                    case Monster.Reaction.Kill:
+                    case MonsterReaction.Kill:
+
                         QuitGame(EndState.Defeat);
-                        return true;
-                    case Monster.Reaction.Throw:
-                        return false;
+                        break;
+
+                    case MonsterReaction.MaelstromThrow:
+
+                        DoMaelstromThrow();
+                        break;
                 }
             }
 
             return false;
+        }
+
+        private void DoMaelstromThrow()
+        {
+            Room newPlayerRoom = world.GetRandomRoom();
+            Room newMaelstromRoom = world.GetRandomEmptyRoom();
+
+            // Guarantee the maelstrom and player do not land into the same room
+            while (newMaelstromRoom == newPlayerRoom)
+            {
+                newMaelstromRoom = world.GetRandomEmptyRoom();
+            }
+
+            newMaelstromRoom.Monster = player.CurrentRoom.Monster;
+            player.CurrentRoom.Monster = null;
+            player.CurrentRoom = newPlayerRoom;
+
+            player.Thrown = true;
         }
 
         private void CheckForVictory()
@@ -211,12 +255,12 @@ namespace FountainOfObjects
                 case EndState.Surrender:
                     Utilities.WriteColoredLine(TermColors.DangerColor, "You flee the dungeon! The Uncoded One will surely know victory if you retreat...");
                     break;
-
                 case EndState.Victory:
                     Utilities.WriteColoredLine(TermColors.VictoryColor, "Success! You reactivated the Fountain of Objects and are prepared for the journey ahead!");
                     break;
                 case EndState.Defeat:
                     Utilities.WriteColoredLine(TermColors.DangerColor, "You have been lost in the darkness. Your bones are never found...");
+                    player.Dead = true;
                     break;
             }
         }
@@ -296,11 +340,6 @@ namespace FountainOfObjects
             Console.Write("What do you want to do? ");
             return Console.ReadLine();
         }
-    }
-
-    class Player
-    {
-        public Room CurrentRoom { get; set; }
     }
 
     class Program

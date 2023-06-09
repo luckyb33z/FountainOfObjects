@@ -15,6 +15,12 @@ namespace Enums
         East
     }
 
+    enum MonsterReaction
+    {
+        Kill,
+        MaelstromThrow
+    }
+
     enum WorldSize
     {
         Small,
