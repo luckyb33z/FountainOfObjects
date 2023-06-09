@@ -54,7 +54,7 @@ namespace World
 
             for (int pitIndex = 0; pitIndex < pitCount; pitIndex++)
             {
-                while (!(GetRoom(x, y) is EmptyRoom))
+                while (!((GetRoom(x, y) is EmptyRoom)))
                 {
                     x = Utilities.rand.Next(0, Size);
                     y = Utilities.rand.Next(0, Size);
@@ -149,7 +149,7 @@ namespace World
         {
             if (x < 0 || x >= Size || y < 0 || y >= Size)
             {
-                return null;
+                throw new IndexOutOfRangeException($"Requested Room index is out of range: {x}/{y}");
             }
             else
             {
