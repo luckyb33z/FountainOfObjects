@@ -5,6 +5,7 @@ namespace Room
     using Feature;
     using IDescriptive;
     using Monster;
+    using Utilities.Exceptions;
 
     public struct RoomCoords
     {
@@ -46,29 +47,39 @@ namespace Room
             }
         }
 
-        public bool InRangeOf(Room room)
+        public IDescriptiveNoisy InRangeOf(Room room)
         {
-            IDescriptiveNoisy noisyThing = null;
+            IDescriptiveNoisy noisyThingToCheck = null;
             if (room.RoomFeature is LoudFeature)
             {
-                noisyThing = room.RoomFeature as LoudFeature;
+                noisyThingToCheck = room.RoomFeature as LoudFeature;
             }
             else if (room.Monster != null)
             {
-                noisyThing = room.Monster;
+                noisyThingToCheck = room.Monster;
             }
 
-            if (noisyThing != null)
+            IDescriptiveNoisy noisyThing = null;
+
+            if (noisyThingToCheck != null)
             {
                 int distanceX = Math.Abs(this.Coordinates.X - room.Coordinates.X);
                 int distanceY = Math.Abs(this.Coordinates.Y - room.Coordinates.Y);
 
-                if (distanceX <= noisyThing.PerceptibleDistance && distanceY <= noisyThing.PerceptibleDistance)
+                if (distanceX <= noisyThingToCheck.PerceptibleDistance && distanceY <= noisyThingToCheck.PerceptibleDistance)
                 {
-                    return true;
+                    noisyThing = noisyThingToCheck;
                 }
             }
-            return false;
+
+            if (noisyThing == null)
+            {
+                throw new NoNoisyThingException("No noisy thing in range of player");
+            }
+            else
+            {
+                return noisyThing;
+            }
         }
 
         public Room (int x, int y)
