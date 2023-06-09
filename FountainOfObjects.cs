@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Enums;
 
 namespace FountainOfObjects
@@ -274,10 +275,15 @@ namespace FountainOfObjects
 
         private void PrintCurrentRoomDescription()
         {
+
+            List<IDescriptive> features = player.CurrentRoom.Features;
             
-            if (player.CurrentRoom.RoomDescription != string.Empty)
+            if (features.Count > 0)
             {
-                Utilities.WriteColoredLine(player.CurrentRoom.FeatureColor, player.CurrentRoom.RoomDescription);
+                foreach (IDescriptive feature in features)
+                {
+                    Utilities.WriteColoredLine(feature.DescColor, feature.InRoomDescription);
+                }
             }
             
         }
