@@ -33,6 +33,13 @@ namespace Utilities
             ResetTermColors();
         }
 
+        public static void WritePromptedColoredLine(ConsoleColor color, string line)
+        {
+            WriteColoredLine(color, line);
+            Console.Write("Press enter to continue.");
+            Console.Read();
+        }
+
         public static void ResetTermColors()
         {
             Console.ForegroundColor = TermColors.DefaultFgColor;
