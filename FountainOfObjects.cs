@@ -5,6 +5,7 @@ namespace FountainOfObjects
 {
     using IDescriptive;
     using Utilities;
+    using Utilities.Exceptions;
     using World;
     using Room;
     using Feature;
@@ -286,19 +287,17 @@ namespace FountainOfObjects
         {
             foreach (Room room in world.LoudRooms)
             {
-                if (player.CurrentRoom.InRangeOf(room))
+                try
                 {
-                    // TODO: We're checking this twice, here and in Room.InRangeOf()... make this check only happen once
-                    IDescriptiveNoisy noisyThing = null;
-
-                    if (room.RoomFeature != null) {noisyThing = room.RoomFeature as LoudFeature;}
-                    if (room.Monster != null) {noisyThing = room.Monster;}
-
-                    if (noisyThing != null)
-                    {
-                        Utilities.WriteColoredLine(noisyThing.DescColor, noisyThing.AdjacentDescription); 
-                    }
+                    IDescriptiveNoisy noisyThing = player.CurrentRoom.InRangeOf(room);
+                    Utilities.WriteColoredLine(noisyThing.DescColor, noisyThing.AdjacentDescription); 
                 }
+                catch (NoNoisyThingException)
+                {
+                    // this is fine, exception is expected if there is no noisy thing nearby
+                    continue;
+                }
+                
             }
         }
 

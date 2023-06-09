@@ -2,6 +2,14 @@ using System;
 
 namespace Utilities
 {
+    namespace Exceptions
+    {
+        public class NoNoisyThingException: Exception 
+        {
+            public NoNoisyThingException(string e): base(e) {}
+        }
+    }
+
     public static class TermColors
     {
         public static ConsoleColor DefaultBgColor = ConsoleColor.Black;
