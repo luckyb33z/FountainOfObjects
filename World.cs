@@ -5,6 +5,7 @@ using Enums;
 namespace World
 {
     using Room;
+    using Monster;
     using Utilities;
 
     class World
@@ -36,8 +37,60 @@ namespace World
             if (Built)
             {
                 PlaceLoudRooms();
+                PlaceMonsters();
             }
         }
+
+        private void PlaceMonsters()
+        {
+            int numAmaroks = GetAmarokCount();
+
+            InstantiateLoudRooms();
+
+            for (int amarokIndex = 0; amarokIndex < numAmaroks; amarokIndex++)
+            {
+                Room room = GetRandomEmptyRoom(true);
+                MonsterAmarok amarok = new MonsterAmarok();
+                room.Monster = amarok;
+                LoudRooms.Add(room);
+            }
+        }
+
+        private Room GetRandomEmptyRoom(bool withoutMonsters)
+        {
+            int x = 0;
+            int y = 0;
+
+            Room room = GetRoom(x, y);
+            while (!(room is EmptyRoom) && (withoutMonsters ? room.Monster == null : room.Monster != null))
+            {
+                x = Utilities.rand.Next(0, Size);
+                y = Utilities.rand.Next(0, Size);
+                room = GetRoom(x, y);
+            }
+
+            return room;
+        }
+
+        private int GetAmarokCount()
+        {
+
+            const int SMALL_AMAROKS = 1;
+            const int MEDIUM_AMAROKS = 2;
+            const int LARGE_AMAROKS = 3;
+
+            switch (_worldSize)
+            {
+                case WorldSize.Small:
+                default:
+                    return SMALL_AMAROKS;
+                case WorldSize.Medium:
+                    return MEDIUM_AMAROKS;
+                case WorldSize.Large:
+                    return LARGE_AMAROKS;
+            }
+        }
+
 
         private void PlaceLoudRooms()
         {
@@ -50,7 +103,7 @@ namespace World
 
             int pitCount = Math.Clamp(Size - PIT_LIMITER, MIN_PITS, MAX_PITS);
 
-            LoudRooms = new List<Room>();
+            InstantiateLoudRooms();
 
             for (int pitIndex = 0; pitIndex < pitCount; pitIndex++)
             {
@@ -67,6 +120,14 @@ namespace World
             }
 
             
+        }
+
+        private void InstantiateLoudRooms()
+        {
+            if (LoudRooms == null)
+            {
+                LoudRooms = new List<Room>();
+            }
         }
 
         private int EnumerateWorldSize()
