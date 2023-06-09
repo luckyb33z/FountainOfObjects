@@ -3,6 +3,8 @@ using System;
 namespace Room
 {
     using Feature;
+    using IDescriptive;
+    using Monster;
 
     public struct RoomCoords
     {
@@ -21,18 +23,15 @@ namespace Room
         public RoomCoords Coordinates { get; protected set; }
         private Feature _feature;
         public Feature RoomFeature { get {return _feature;} protected set {_feature = value;}}
+        public Monster Monster { get; set; }
 
         public ConsoleColor FeatureColor {
             get
             {
-                if (RoomFeature == null)
-                {
-                    return ConsoleColor.White;
-                }
-                else
-                {
-                    return RoomFeature.DescColor;
-                }
+                // TODO: Can RoomFeature/Monster be condensed into IDescriptive?
+                if (RoomFeature != null) {return RoomFeature.DescColor;}
+                else if (Monster != null) {return Monster.DescColor;}
+                else {return ConsoleColor.White;}
             }
         }
 
@@ -40,27 +39,31 @@ namespace Room
         {
             get
             {
-                if (RoomFeature == null)
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return RoomFeature.InRoomDescription;
-                }
+                // TODO: Can RoomFeature/Monster be condensed into IDescriptive?
+                if (RoomFeature != null) {return RoomFeature.InRoomDescription;}
+                else if (Monster != null) {return Monster.InRoomDescription;}
+                else {return string.Empty;}
             }
         }
 
         public bool InRangeOf(Room room)
         {
+            IDescriptiveNoisy noisyThing = null;
             if (room.RoomFeature is LoudFeature)
             {
-                LoudFeature feature = room.RoomFeature as LoudFeature;
+                noisyThing = room.RoomFeature as LoudFeature;
+            }
+            else if (room.Monster != null)
+            {
+                noisyThing = room.Monster;
+            }
 
+            if (noisyThing != null)
+            {
                 int distanceX = Math.Abs(this.Coordinates.X - room.Coordinates.X);
                 int distanceY = Math.Abs(this.Coordinates.Y - room.Coordinates.Y);
 
-                if (distanceX <= feature.PerceptibleDistance && distanceY <= feature.PerceptibleDistance)
+                if (distanceX <= noisyThing.PerceptibleDistance && distanceY <= noisyThing.PerceptibleDistance)
                 {
                     return true;
                 }

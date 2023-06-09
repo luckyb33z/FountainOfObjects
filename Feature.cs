@@ -7,14 +7,14 @@ namespace Feature
 
     abstract class Feature: IDescriptive
     {
-        public string InRoomDescription { get; set; } 
-        public ConsoleColor DescColor { get; set; }
+        virtual public string InRoomDescription { get; set; } 
+        virtual public ConsoleColor DescColor { get; set; }
     }
 
     abstract class LoudFeature: Feature, IDescriptiveNoisy
     {
-        public string AdjacentDescription { get; set; }
-        public int PerceptibleDistance { get; set; }
+        virtual public string AdjacentDescription { get; set; }
+        virtual public int PerceptibleDistance { get; set; } = 1;
     }
 
     class LoudFeaturePit: LoudFeature
@@ -23,7 +23,6 @@ namespace Feature
         {
             InRoomDescription = "Oh no! There's no floor below you!";
             AdjacentDescription = "You feel a draft. There is a pit in a nearby room.";
-            PerceptibleDistance = 1;
             DescColor = TermColors.DangerColor;
         }
     }

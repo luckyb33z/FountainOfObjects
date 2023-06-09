@@ -3,6 +3,7 @@ using Enums;
 
 namespace FountainOfObjects
 {
+    using IDescriptive;
     using Utilities;
     using World;
     using Room;
@@ -125,6 +126,19 @@ namespace FountainOfObjects
                 QuitGame(EndState.Defeat);
                 return true;
             }
+            
+            if (player.CurrentRoom.Monster != null)
+            {
+                switch (player.CurrentRoom.Monster.Reaction)
+                {
+                    case Monster.Reaction.Kill:
+                        QuitGame(EndState.Defeat);
+                        return true;
+                    case Monster.Reaction.Throw:
+                        return false;
+                }
+            }
+
             return false;
         }
 
@@ -274,8 +288,16 @@ namespace FountainOfObjects
             {
                 if (player.CurrentRoom.InRangeOf(room))
                 {
-                    LoudFeature feature = room.RoomFeature as LoudFeature;
-                    Utilities.WriteColoredLine(room.FeatureColor, feature.AdjacentDescription); 
+                    // TODO: We're checking this twice, here and in Room.InRangeOf()... make this check only happen once
+                    IDescriptiveNoisy noisyThing = null;
+
+                    if (room.RoomFeature != null) {noisyThing = room.RoomFeature as LoudFeature;}
+                    if (room.Monster != null) {noisyThing = room.Monster;}
+
+                    if (noisyThing != null)
+                    {
+                        Utilities.WriteColoredLine(noisyThing.DescColor, noisyThing.AdjacentDescription); 
+                    }
                 }
             }
         }
