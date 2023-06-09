@@ -2,7 +2,7 @@ using System;
 
 namespace Room
 {
-    using Feature;
+    using Terrain;
     using IDescriptive;
     using Monster;
     using Utilities.Exceptions;
@@ -22,8 +22,8 @@ namespace Room
     abstract class Room
     {
         public RoomCoords Coordinates { get; protected set; }
-        private Feature _feature;
-        public Feature RoomFeature { get {return _feature;} protected set {_feature = value;}}
+        private Terrain _feature;
+        public Terrain RoomFeature { get {return _feature;} protected set {_feature = value;}}
         public Monster Monster { get; set; }
 
         public ConsoleColor FeatureColor {
@@ -50,9 +50,9 @@ namespace Room
         public IDescriptiveNoisy InRangeOf(Room room)
         {
             IDescriptiveNoisy noisyThingToCheck = null;
-            if (room.RoomFeature is LoudFeature)
+            if (room.RoomFeature is TerrainNoisy)
             {
-                noisyThingToCheck = room.RoomFeature as LoudFeature;
+                noisyThingToCheck = room.RoomFeature as TerrainNoisy;
             }
             else if (room.Monster != null)
             {
@@ -92,7 +92,7 @@ namespace Room
     {
         public PitRoom(int x, int y): base(x, y)
         {
-            RoomFeature = new LoudFeaturePit();
+            RoomFeature = new TerrainNoisyPit();
         }
     }
 
@@ -108,7 +108,7 @@ namespace Room
     {
         public bool IsFountainActive()
         {
-            FeatureFountain fountain = RoomFeature as FeatureFountain;
+            TerrainFountain fountain = RoomFeature as TerrainFountain;
 
             if (fountain == null)
             {
@@ -122,7 +122,7 @@ namespace Room
 
         public void ActivateFountain()
         {
-            FeatureFountain fountain = RoomFeature as FeatureFountain;
+            TerrainFountain fountain = RoomFeature as TerrainFountain;
 
             if (fountain != null)
             {
@@ -132,7 +132,7 @@ namespace Room
 
         public FountainRoom(int x, int y): base(x, y)
         {
-            RoomFeature = new FeatureFountain();
+            RoomFeature = new TerrainFountain();
         }
     }
 
@@ -142,7 +142,7 @@ namespace Room
 
         public EntranceRoom(int x, int y): base(x, y)
         {
-            RoomFeature = new FeatureEntrance();
+            RoomFeature = new TerrainEntrance();
         }
     }
 }
