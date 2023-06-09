@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace Room
 {
-    using Feature;
+    using Terrain;
     using IDescriptive;
     using Monster;
     using Utilities.Exceptions;
@@ -22,16 +23,25 @@ namespace Room
     abstract class Room
     {
         public RoomCoords Coordinates { get; protected set; }
-        private Feature _feature;
-        public Feature RoomFeature { get {return _feature;} protected set {_feature = value;}}
+        public Terrain Terrain { get; set; }
         public Monster Monster { get; set; }
+        public List<IDescriptive> Features {
+            get
+            {
+                List<IDescriptive> _features = new List<IDescriptive>();
 
+                if (Terrain != null) {_features.Add(Terrain);}
+                if (Monster != null) {_features.Add(Monster);}
+                
+                return _features;
+            }
+        }
+
+        /*
         public ConsoleColor FeatureColor {
             get
             {
-                // TODO: Can RoomFeature/Monster be condensed into IDescriptive?
-                if (RoomFeature != null) {return RoomFeature.DescColor;}
-                else if (Monster != null) {return Monster.DescColor;}
+                if (Feature != null) {return Feature.DescColor;}
                 else {return ConsoleColor.White;}
             }
         }
@@ -40,19 +50,18 @@ namespace Room
         {
             get
             {
-                // TODO: Can RoomFeature/Monster be condensed into IDescriptive?
-                if (RoomFeature != null) {return RoomFeature.InRoomDescription;}
-                else if (Monster != null) {return Monster.InRoomDescription;}
+                if (Feature != null) {return Feature.InRoomDescription;}
                 else {return string.Empty;}
             }
         }
+        */
 
         public IDescriptiveNoisy InRangeOf(Room room)
         {
             IDescriptiveNoisy noisyThingToCheck = null;
-            if (room.RoomFeature is LoudFeature)
+            if (room.Terrain is TerrainNoisy)
             {
-                noisyThingToCheck = room.RoomFeature as LoudFeature;
+                noisyThingToCheck = room.Terrain as TerrainNoisy;
             }
             else if (room.Monster != null)
             {
@@ -92,7 +101,7 @@ namespace Room
     {
         public PitRoom(int x, int y): base(x, y)
         {
-            RoomFeature = new LoudFeaturePit();
+            Terrain = new TerrainNoisyPit();
         }
     }
 
@@ -108,7 +117,7 @@ namespace Room
     {
         public bool IsFountainActive()
         {
-            FeatureFountain fountain = RoomFeature as FeatureFountain;
+            TerrainFountain fountain = Terrain as TerrainFountain;
 
             if (fountain == null)
             {
@@ -122,7 +131,7 @@ namespace Room
 
         public void ActivateFountain()
         {
-            FeatureFountain fountain = RoomFeature as FeatureFountain;
+            TerrainFountain fountain = Terrain as TerrainFountain;
 
             if (fountain != null)
             {
@@ -132,7 +141,7 @@ namespace Room
 
         public FountainRoom(int x, int y): base(x, y)
         {
-            RoomFeature = new FeatureFountain();
+            Terrain = new TerrainFountain();
         }
     }
 
@@ -142,7 +151,7 @@ namespace Room
 
         public EntranceRoom(int x, int y): base(x, y)
         {
-            RoomFeature = new FeatureEntrance();
+            Terrain = new TerrainEntrance();
         }
     }
 }
