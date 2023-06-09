@@ -8,7 +8,6 @@ namespace FountainOfObjects
     using Utilities.Exceptions;
     using World;
     using Room;
-    using Feature;
 
     public class GameMaster
     {
