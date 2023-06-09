@@ -92,13 +92,13 @@ namespace FountainOfObjects
                 RoomReacting = true;
                 while (RoomReacting)
                 {
-                    ReportLocation();
+                    ReportStatus();
                     RoomReacting = DoRoomReactions();  // This while loop will allow for repeated messages in the event of multi-maelstrom; it's almost recursive
                 }
 
                 if (player.Thrown)
                 {
-                    ReportLocation();
+                    ReportStatus();
                     player.Thrown = false;
                 }
 
@@ -112,10 +112,11 @@ namespace FountainOfObjects
             }
         }
 
-        private void ReportLocation()
+        private void ReportStatus()
         {
             const string divider = "----------------------------------------";
             Console.WriteLine(divider);
+            Console.WriteLine($"You have {player.Arrows} arrows left.");
             PrintLocation();
             PrintCurrentRoomDescription();
         }
@@ -182,6 +183,8 @@ namespace FountainOfObjects
 
         private void ProcessCommand(string command)
         {
+            // This is a big function. How can I break it down?
+
             switch (command.ToLower())
             {
                 case "activate fountain":
@@ -227,6 +230,24 @@ namespace FountainOfObjects
                     TryMove(Direction.South);
                     break;
 
+                // Arrow shooting
+                case "shoot west":
+                case "shoot w":
+                    TryShoot(Direction.West);
+                    break;
+                case "shoot east":
+                case "shoot e":
+                    TryShoot(Direction.East);
+                    break;
+                case "shoot north":
+                case "shoot n":
+                    TryShoot(Direction.North);
+                    break;
+                case "shoot south":
+                case "shoot s":
+                    TryShoot(Direction.South);
+                    break;
+
                 case "quit":
                 case "qq":
                 case "q":
@@ -265,9 +286,55 @@ namespace FountainOfObjects
             }
         }
 
+        private void TryShoot(Direction dir)
+        {
+            if (player.CanShoot())
+            {
+                RoomCoords destination = GetDirectionalOffset(dir);
+
+                if (destination.X < 0 || destination.Y < 0 || destination.X >= world.Size || destination.Y >= world.Size)
+                {
+                    Utilities.WriteColoredLine(TermColors.BumpColor, "You can't shoot that direction; you'd hit a wall!");
+                }
+                else
+                {
+                    Room targetRoom = world.GetRoom(destination.X, destination.Y);
+                    if (targetRoom.Monster != null)
+                    {
+                        Utilities.WritePromptedColoredLine(TermColors.VictoryColor, "You hear the death cry of a monster!");
+                        targetRoom.Monster = null;
+                        world.LoudRooms.Remove(targetRoom);
+                    }
+                    else
+                    {
+                        Utilities.WritePromptedColoredLine(TermColors.LightColor, $"You loose an arrow to the {dir}... but you hit nothing!");
+                    }
+                }
+                player.ShootArrow();
+            }
+            else
+            {
+                Utilities.WritePromptedColoredLine(TermColors.LightColor, "Alas, you are out of arrows!");
+            }
+        }
+
         private void TryMove(Direction dir)
         {
 
+            RoomCoords destination = GetDirectionalOffset(dir);
+
+            if (destination.X < 0 || destination.Y < 0 || destination.X >= world.Size || destination.Y >= world.Size)
+            {
+                Utilities.WriteColoredLine(TermColors.BumpColor, "You bump into a wall!");
+            }
+            else
+            {
+                player.CurrentRoom = world.GetRoom(destination.X, destination.Y);
+            }
+        }
+
+        private RoomCoords GetDirectionalOffset(Direction dir)
+        {
             int newX = player.CurrentRoom.Coordinates.X;
             int newY = player.CurrentRoom.Coordinates.Y;
 
@@ -287,14 +354,7 @@ namespace FountainOfObjects
                     break;
             }
 
-            if (newX < 0 || newY < 0 || newX >= world.Size || newY >= world.Size)
-            {
-                Utilities.WriteColoredLine(TermColors.BumpColor, "You bump into a wall!");
-            }
-            else
-            {
-                player.CurrentRoom = world.GetRoom(newX, newY);
-            }
+            return new RoomCoords(newX, newY);
         }
 
         private void PrintLocation()
