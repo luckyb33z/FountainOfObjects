@@ -25,12 +25,73 @@ namespace FountainOfObjects
             if (BuildWorld())
             {
                 Playing = true;
+                ShowIntroductoryText();
                 StartAdventure();
             }
             else
             {
                 Console.WriteLine("Failed to build world!");
             }
+        }
+
+        private void ShowIntroductoryText()
+        {
+            Console.Clear();
+
+            // Line 1: "You enter the Cavern of Objects, a maze of rooms filled with dangerous pits in search of the Fountain of Objects."
+            Console.Write("You enter the ");
+            Utilities.WriteColored(TermColors.LightColor, "Cavern of Objects");
+            Console.Write(", a maze of rooms filled with ");
+            Utilities.WriteColored(TermColors.DangerColor, "dangerous pits");
+            Console.Write(" in search of the ");
+            Utilities.WriteColored(TermColors.WaterColor, "Fountain of Objects");
+            Console.WriteLine(".");
+
+            // Line 2: "Light is visible only in the entrance, and no other light is seen anywhere in the Caverns."
+            Console.WriteLine("Light is visible only in the entrance, and no other light is seen anywhere in the Caverns.");
+
+            // Line 3: "You must navigate the Caverns with your other senses."
+            Console.WriteLine("You must navigate the Caverns with your other senses.");
+
+            // Line 4: "Find the Fountain of Objects, ACTIVATE it, and return to the entrance."
+            Console.Write("Find the ");
+            Utilities.WriteColored(TermColors.WaterColor, "Fountain of Objects");
+            Console.Write(", ");
+            Utilities.WriteColored(TermColors.VictoryColor, "ACTIVATE");
+            Console.Write(" it, and return to the ");
+            Utilities.WriteColored(TermColors.LightColor, "entrance");
+            Console.WriteLine(".");
+
+            // Line 5: "Look out for pits. You will feel a breeze if a pit is in a nearby room. If you enter a room with a pit, you will die."
+            Console.Write("Look out for ");
+            Utilities.WriteColored(TermColors.DangerColor, "pits");
+            Console.Write(". You will feel a breeze if a ");
+            Utilities.WriteColored(TermColors.DangerColor, "pit");
+            Console.Write(" is in a nearby room. ");
+            Utilities.WriteColoredLine(TermColors.DangerColor, "If you enter a room with a pit, you will die.");
+
+            // Line 6: "Maelstroms are violent forces of sentient wind. Entering a room with one could send you flying to any of the rooms in the cavern!"
+            Utilities.WriteColored(TermColors.DangerColor, "Maelstroms");
+            Console.Write(" are violent forces of sentient wind. ");
+            Utilities.WriteColoredLine(TermColors.BumpColor, "Entering a room with one could send you flying to any of the rooms in the cavern!");
+
+            // Line 7: "Amaroks roam the caverns. Encountering one is certain death, but they smell strongly of rot."
+            Utilities.WriteColored(TermColors.DangerColor, "Amaroks");
+            Console.Write(" roam the caverns. ");
+            Utilities.WriteColored(TermColors.DangerColor, "Encountering one is certain death");
+            Console.Write(", but ");
+            Utilities.WriteColoredLine(TermColors.BumpColor, "they smell strongly of rot.");
+
+            // Line 8: "You carry with you a bow and arrow. You can use them to SHOOT monsters in adjacent rooms, but you have a limited supply of arrows."
+            Console.Write("You carry with you a ");
+            Utilities.WriteColored(TermColors.VictoryColor, "bow and arrow");
+            Console.Write(". You can use them to ");
+            Utilities.WriteColored(TermColors.VictoryColor, "SHOOT");
+            Console.Write(" monsters in adjacent rooms, ");
+            Utilities.WriteColoredLine(TermColors.BumpColor, "but you have a limited supply of arrows.");
+
+            Utilities.WriteColoredLine(TermColors.BumpColor, "\nPress enter to begin...");
+            Console.Read();
         }
 
         private WorldSize GetWorldSize()

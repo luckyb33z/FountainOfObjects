@@ -23,7 +23,7 @@ namespace Monster
     {
         public MonsterAmarok()
         {
-            InRoomDescription = "The amarok attacks! It tears you to shreds!";
+            InRoomDescription = "You are beset by an amarok! It tears you to shreds!";
             AdjacentDescription = "You smell the rotten stench of an amarok in a nearby room.";
             Reaction = MonsterReaction.Kill;
         }
