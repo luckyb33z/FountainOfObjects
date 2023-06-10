@@ -332,8 +332,8 @@ namespace FountainOfObjects
                     {
                         Utilities.WritePromptedColoredLine(TermColors.LightColor, $"You loose an arrow to the {dir}... but you hit nothing!");
                     }
+                    player.ShootArrow();
                 }
-                player.ShootArrow();
             }
             else
             {
