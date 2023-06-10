@@ -108,7 +108,7 @@ namespace FountainOfObjects
                 if (!IsGameOver())
                 {
                     PrintAdjacentRoomDescriptions();
-                    string command = AskForCommand();
+                    string command = AskForCommand();                    
                     ProcessCommand(command);
                     CheckForVictory();
                 }
@@ -428,7 +428,14 @@ namespace FountainOfObjects
         private string AskForCommand()
         {
             Console.Write("What do you want to do? ");
-            return Console.ReadLine();
+            string command = Console.ReadLine();
+            // The following while is a Windows fix to prevent multiple
+            // empty inputs when pressing enter to continue
+            while (command == string.Empty || command == "\r" || command == "\n")
+            {
+                command = Console.ReadLine();
+            }
+            return command;
         }
 
                 private void ShowIntroductoryText()
