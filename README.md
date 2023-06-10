@@ -7,8 +7,7 @@ Current Expansions:
 2. Pits
 3. Amaroks
 4. Maelstroms
-
-To-do:
-
 5. Getting Armed
 6. Getting Help
+
+Project complete, aside from polish! I learned a lot!
