@@ -56,6 +56,10 @@ namespace World
             foreach (Monster monster in monsterList)
             {
                 Room room = GetRandomEmptyRoom();
+                while (LoudRooms.Contains(room))
+                {
+                    room = GetRandomEmptyRoom();
+                }
                 room.Monster = monster;
                 LoudRooms.Add(room);
             }
