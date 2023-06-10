@@ -91,17 +91,32 @@ namespace World
 
         public Room GetRandomEmptyRoom(bool entryGrace = true, bool withoutMonsters = true)
         {
-            const int GRACE_RANGE = 2; // Do not put any features this far from the entryway
+            int graceRange = entryGrace ? 1 : 0; // Do not put any features this far from the entryway
 
             int x = 0;
             int y = 0;
 
+            bool rerolling = false;
             Room room = GetRoom(x, y);
             while (!(room is EmptyRoom) && (withoutMonsters ? room.Monster == null : room.Monster != null))
             {
-                x = Utilities.rand.Next(entryGrace ? GRACE_RANGE : 0, Size);
-                y = Utilities.rand.Next(entryGrace ? GRACE_RANGE : 0, Size);
+                int errorCount = 0;
+                while ((x <= graceRange && y <= graceRange) || rerolling)
+                {
+                    x = Utilities.rand.Next(graceRange, Size);
+                    y = Utilities.rand.Next(graceRange, Size);
+                    errorCount++;
+                    rerolling = false;
+                    if (errorCount >= 10)
+                    {
+                        const string errorString = "The room generation bug reappeared -- tell Lucky! Crashing the game!";
+                        Utilities.WritePromptedColoredLine(ConsoleColor.Red, errorString);
+                        throw new OverflowException(errorString);
+                    }
+                }
                 room = GetRoom(x, y);
+                if (!(room is EmptyRoom)) {rerolling = true;}
+                else {rerolling = false;}      
             }
 
             return room;
@@ -144,7 +159,6 @@ namespace World
             }
         }
 
-
         private void PlaceLoudRooms()
         {
             const int MIN_PITS = 1;
@@ -162,8 +176,6 @@ namespace World
                 _rooms[room.Coordinates.X][room.Coordinates.Y] = pit;
                 LoudRooms.Add(pit);
             }
-
-            
         }
 
         private void InstantiateLoudRooms()
@@ -195,15 +207,10 @@ namespace World
 
         private RoomCoords RandomizeFountainCoords()
         {
+            const int MIN_DISTANCE = 2;
 
-            int x = 0;
-            int y = 0;
-
-            while (x == 0 && y == 0)
-            {
-                x = Utilities.rand.Next(0, Size);
-                y = Utilities.rand.Next(0, Size);
-            }
+            int x = Utilities.rand.Next(MIN_DISTANCE, Size);
+            int y = Utilities.rand.Next(MIN_DISTANCE, Size);
 
             return new RoomCoords(x, y);
 

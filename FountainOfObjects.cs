@@ -102,7 +102,7 @@ namespace FountainOfObjects
             {
                 Console.Clear();
 
-                Console.Write("What is the difficulty of the adventure? (easy/medium/hard) ");
+                Console.Write("What is the difficulty of the adventure? (Easy/Medium/Hard) ");
                 string choice = Console.ReadLine();
                 size = ProcessWorldSizeChoice(choice);
                 
@@ -117,8 +117,10 @@ namespace FountainOfObjects
             {
                 case "easy":
                 case "e":
+                case "ez": // haha
                     return WorldSize.Small;
                 case "medium":
+                case "med":
                 case "m":
                     return WorldSize.Medium;
                 case "hard":
@@ -261,7 +263,7 @@ namespace FountainOfObjects
                         else
                         {
                             fountainRoom.ActivateFountain();
-                            Utilities.WritePromptedColoredLine(TermColors.LightColor, "Now you must escape the Cavern with your life!");
+                            Utilities.WritePromptedColoredLine(TermColors.LightColor, "You did it! Now you must escape the Cavern with your life!");
                         }
                     }
                     else
