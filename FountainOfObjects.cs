@@ -271,7 +271,6 @@ namespace FountainOfObjects
                     break;
 
                 case "":    // hack fix for windows
-                    Console.Clear();
                     break;
 
                 default:
