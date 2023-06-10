@@ -270,6 +270,10 @@ namespace FountainOfObjects
                     Utilities.ShowCommands();
                     break;
 
+                case "":    // hack fix for windows
+                    Console.Clear();
+                    break;
+
                 default:
                     Console.WriteLine("Unknown command.");
                     break;
