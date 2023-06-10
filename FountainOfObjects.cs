@@ -477,7 +477,7 @@ namespace FountainOfObjects
             // Line 6: "Maelstroms are violent forces of sentient wind. Entering a room with one could send you flying to any of the rooms in the cavern!"
             Utilities.WriteColored(TermColors.DangerColor, "Maelstroms");
             Console.Write(" are violent forces of sentient wind. ");
-            Utilities.WriteColoredLine(TermColors.BumpColor, "Entering a room with one could send you flying to any of the rooms in the cavern!");
+            Utilities.WriteColoredLine(TermColors.BumpColor, "Entering a room with one could send you flying anywhere!");
 
             // Line 7: "Amaroks roam the caverns. Encountering one is certain death, but they smell strongly of rot."
             Utilities.WriteColored(TermColors.DangerColor, "Amaroks");
@@ -491,8 +491,8 @@ namespace FountainOfObjects
             Utilities.WriteColored(TermColors.VictoryColor, "bow and arrow");
             Console.Write(". You can use them to ");
             Utilities.WriteColored(TermColors.VictoryColor, "SHOOT");
-            Console.Write(" monsters in adjacent rooms, ");
-            Utilities.WriteColoredLine(TermColors.BumpColor, "but you have a limited supply of arrows.");
+            Console.Write(" monsters, ");
+            Utilities.WriteColoredLine(TermColors.BumpColor, "but you don't have many arrows.");
 
             Console.Write("\nFinally, use ");
             Utilities.WriteColored(TermColors.VictoryColor, "HELP");
