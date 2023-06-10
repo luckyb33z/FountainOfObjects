@@ -102,7 +102,7 @@ namespace FountainOfObjects
             {
                 Console.Clear();
 
-                Console.Write("What is the size of the world? (small/medium/large) ");
+                Console.Write("What is the difficulty of the adventure? (easy/medium/hard) ");
                 string choice = Console.ReadLine();
                 size = ProcessWorldSizeChoice(choice);
                 
@@ -115,14 +115,14 @@ namespace FountainOfObjects
 
             switch (choice)
             {
-                case "small":
-                case "s":
+                case "easy":
+                case "e":
                     return WorldSize.Small;
                 case "medium":
                 case "m":
                     return WorldSize.Medium;
-                case "large":
-                case "l":
+                case "hard":
+                case "h":
                     return WorldSize.Large;
                 default:
                     Console.WriteLine("Unknown world size.");
@@ -261,6 +261,7 @@ namespace FountainOfObjects
                         else
                         {
                             fountainRoom.ActivateFountain();
+                            Utilities.WritePromptedColoredLine(TermColors.LightColor, "Now you must escape the Cavern with your life!");
                         }
                     }
                     else
@@ -335,13 +336,24 @@ namespace FountainOfObjects
             switch (state)
             {
                 case EndState.Surrender:
-                    Utilities.WriteColoredLine(TermColors.DangerColor, "You flee the dungeon! The Uncoded One will surely know victory if you retreat...");
+                    Utilities.WritePromptedColoredLine(TermColors.DangerColor, "You flee the dungeon! The Uncoded One will surely know victory if you retreat...");
                     break;
                 case EndState.Victory:
-                    Utilities.WriteColoredLine(TermColors.VictoryColor, "Success! You reactivated the Fountain of Objects and are prepared for the journey ahead!");
+                    Utilities.WritePromptedColoredLine(TermColors.VictoryColor, "Success! You reactivated the Fountain of Objects and are prepared for the journey ahead!");
                     break;
                 case EndState.Defeat:
-                    Utilities.WriteColoredLine(TermColors.DangerColor, "You have been lost in the darkness. Your bones are never found...");
+                    const string defeatString = "You have been lost in the darkness. Your bones are never found...";
+                    
+                    if (world.FountainRoom.IsFountainActive())
+                    {
+                        Utilities.WriteColoredLine(TermColors.DangerColor, defeatString);
+                        Utilities.WritePromptedColoredLine(TermColors.VictoryColor, "But despite your death, the Fountain has been reactivated! There's hope for the world!");
+                    }
+                    else
+                    {
+                        Utilities.WritePromptedColoredLine(TermColors.DangerColor, defeatString);
+                    }
+
                     player.Dead = true;
                     break;
             }
@@ -420,7 +432,7 @@ namespace FountainOfObjects
 
         private void PrintLocation()
         {
-            Console.WriteLine($"You are in the room at {player.CurrentRoom.Coordinates.X}/{player.CurrentRoom.Coordinates.Y}.");
+            Console.WriteLine($"You are in the room at {player.CurrentRoom.Coordinates.X + 1}/{player.CurrentRoom.Coordinates.Y + 1}.");
         }
 
         private void PrintCurrentRoomDescription()
@@ -432,7 +444,14 @@ namespace FountainOfObjects
             {
                 foreach (IDescriptive feature in features)
                 {
-                    Utilities.WriteColoredLine(feature.DescColor, feature.InRoomDescription);
+                    if (feature is Monster.MonsterMaelstrom)
+                    {
+                        Utilities.WritePromptedColoredLine(feature.DescColor, feature.InRoomDescription);
+                    }
+                    else
+                    {
+                        Utilities.WriteColoredLine(feature.DescColor, feature.InRoomDescription);
+                    }
                 }
             }
             

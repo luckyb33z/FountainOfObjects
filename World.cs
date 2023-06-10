@@ -89,16 +89,18 @@ namespace World
             return GetRoom(x, y);
         }
 
-        public Room GetRandomEmptyRoom(bool withoutMonsters = true)
+        public Room GetRandomEmptyRoom(bool entryGrace = true, bool withoutMonsters = true)
         {
+            const int GRACE_RANGE = 2; // Do not put any features this far from the entryway
+
             int x = 0;
             int y = 0;
 
             Room room = GetRoom(x, y);
             while (!(room is EmptyRoom) && (withoutMonsters ? room.Monster == null : room.Monster != null))
             {
-                x = Utilities.rand.Next(0, Size);
-                y = Utilities.rand.Next(0, Size);
+                x = Utilities.rand.Next(entryGrace ? GRACE_RANGE : 0, Size);
+                y = Utilities.rand.Next(entryGrace ? GRACE_RANGE : 0, Size);
                 room = GetRoom(x, y);
             }
 
@@ -149,22 +151,15 @@ namespace World
             const int MAX_PITS = 4;
             const int PIT_LIMITER = 4;
 
-            int x = 0;
-            int y = 0;
-
             int pitCount = Math.Clamp(Size - PIT_LIMITER, MIN_PITS, MAX_PITS);
 
             for (int pitIndex = 0; pitIndex < pitCount; pitIndex++)
             {
-                while (!((GetRoom(x, y) is EmptyRoom)))
-                {
-                    x = Utilities.rand.Next(0, Size);
-                    y = Utilities.rand.Next(0, Size);
-                }
-
-                PitRoom pit = new PitRoom(x, y);
-
-                _rooms[x][y] = pit;
+                Room room = GetRandomEmptyRoom();
+                PitRoom pit = new PitRoom(room.Coordinates.X, room.Coordinates.Y);
+                
+                room = pit;
+                _rooms[room.Coordinates.X][room.Coordinates.Y] = pit;
                 LoudRooms.Add(pit);
             }
 
