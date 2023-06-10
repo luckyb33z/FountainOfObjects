@@ -26,6 +26,13 @@ namespace Utilities
     {
         public static Random rand = new Random();
 
+        public static void WriteColored(ConsoleColor color, string words)
+        {
+            Console.ForegroundColor = color;
+            Console.Write(words);
+            ResetTermColors();
+        }
+
         public static void WriteColoredLine(ConsoleColor color, string line)
         {
             Console.ForegroundColor = color;
