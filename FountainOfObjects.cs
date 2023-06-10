@@ -53,7 +53,7 @@ namespace FountainOfObjects
         private WorldSize ProcessWorldSizeChoice(string choice)
         {
 
-            switch (choice)
+            switch (choice.ToLower())
             {
                 case "easy":
                 case "e":
