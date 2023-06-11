@@ -10,4 +10,6 @@ Current Expansions:
 5. Getting Armed
 6. Getting Help
 
-Project complete, aside from polish! I learned a lot!
+Version history
+
+1.03: Arrows no longer decrement if you try to shoot a wall
