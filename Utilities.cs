@@ -47,6 +47,11 @@ namespace Utilities
             Console.Read();
         }
 
+        public static void WritePromptedLine(string line)
+        {
+            WritePromptedColoredLine(TermColors.DefaultFgColor, line);
+        }
+
         public static void ResetTermColors()
         {
             Console.ForegroundColor = TermColors.DefaultFgColor;

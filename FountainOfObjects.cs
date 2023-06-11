@@ -14,6 +14,8 @@ namespace FountainOfObjects
     public class GameMaster
     {
 
+        DateTime _gameBeginTime;
+
         World world;
         Player player;
 
@@ -88,6 +90,7 @@ namespace FountainOfObjects
 
         private void StartAdventure()
         {
+            _gameBeginTime = DateTime.Now;
             Console.Clear();
             
             while (Playing)
@@ -281,15 +284,14 @@ namespace FountainOfObjects
 
         private void QuitGame(EndState state)
         {
-            Playing = false;
 
             switch (state)
             {
                 case EndState.Surrender:
-                    Utilities.WritePromptedColoredLine(TermColors.DangerColor, "You flee the dungeon! The Uncoded One will surely know victory if you retreat...");
+                    Utilities.WriteColoredLine(TermColors.DangerColor, "You flee the dungeon! The Uncoded One will surely know victory if you retreat...");
                     break;
                 case EndState.Victory:
-                    Utilities.WritePromptedColoredLine(TermColors.VictoryColor, "Success! You reactivated the Fountain of Objects and are prepared for the journey ahead!");
+                    Utilities.WriteColoredLine(TermColors.VictoryColor, "Success! You reactivated the Fountain of Objects and are prepared for the journey ahead!");
                     break;
                 case EndState.Defeat:
                     const string defeatString = "You have been lost in the darkness. Your bones are never found...";
@@ -297,16 +299,49 @@ namespace FountainOfObjects
                     if (world.FountainRoom.IsFountainActive())
                     {
                         Utilities.WriteColoredLine(TermColors.DangerColor, defeatString);
-                        Utilities.WritePromptedColoredLine(TermColors.VictoryColor, "But despite your death, the Fountain has been reactivated! There's hope for the world!");
+                        Utilities.WriteColoredLine(TermColors.VictoryColor, "But despite your death, the Fountain has been reactivated! There's hope for the world!");
                     }
                     else
                     {
-                        Utilities.WritePromptedColoredLine(TermColors.DangerColor, defeatString);
+                        Utilities.WriteColoredLine(TermColors.DangerColor, defeatString);
                     }
 
                     player.Dead = true;
                     break;
             }
+
+            PrintPlaytime();
+            Playing = false;
+
+        }
+
+        private void PrintPlaytime()
+        {
+            TimeSpan playtime = DateTime.Now - _gameBeginTime;
+            string playtimeString = "You were in the Caverns for ";
+            if (playtime.Minutes == 1)
+            {
+                playtimeString += $"{playtime.Minutes} minute and ";
+            }
+            else if (playtime.Minutes > 1)
+            {
+                playtimeString += $"{playtime.Minutes} minutes and ";
+            }
+            
+            if (playtime.Seconds == 1)
+            {
+                playtimeString += $"{playtime.Seconds} second.";
+            }
+            else if (playtime.Seconds != 1)
+            {
+                playtimeString += $"{playtime.Seconds} seconds.";
+            }
+            if (playtime.Seconds < 5 && playtime.Minutes == 0)
+            {
+                playtimeString +=".. not gonna deal with that!";
+            }
+
+            Utilities.WritePromptedLine(playtimeString);
         }
 
         private void TryShoot(Direction dir)

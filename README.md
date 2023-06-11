@@ -13,3 +13,7 @@ Current Expansions:
 Version history
 
 1.03: Arrows no longer decrement if you try to shoot a wall
+
+Upcoming in 1.04:
+
+1. The time taken per game is now reported at the end screen.
