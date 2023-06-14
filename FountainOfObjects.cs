@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Enums;
 
 namespace FountainOfObjects
@@ -318,30 +319,30 @@ namespace FountainOfObjects
         private void PrintPlaytime()
         {
             TimeSpan playtime = DateTime.Now - _gameBeginTime;
-            string playtimeString = "You were in the Caverns for ";
+            StringBuilder playtimeString = new StringBuilder("You were in the Caverns for ");
             if (playtime.Minutes == 1)
             {
-                playtimeString += $"{playtime.Minutes} minute and ";
+                playtimeString.Append($"{playtime.Minutes} minute and ");
             }
             else if (playtime.Minutes > 1)
             {
-                playtimeString += $"{playtime.Minutes} minutes and ";
+                playtimeString.Append($"{playtime.Minutes} minutes and ");
             }
             
             if (playtime.Seconds == 1)
             {
-                playtimeString += $"{playtime.Seconds} second.";
+                playtimeString.Append($"{playtime.Seconds} second.");
             }
             else if (playtime.Seconds != 1)
             {
-                playtimeString += $"{playtime.Seconds} seconds.";
+                playtimeString.Append($"{playtime.Seconds} seconds.");
             }
             if (playtime.Seconds < 5 && playtime.Minutes == 0)
             {
-                playtimeString +=".. not gonna deal with that!";
+                playtimeString.Append(".. not gonna deal with that!");
             }
 
-            Utilities.WritePromptedLine(playtimeString);
+            Utilities.WritePromptedLine(playtimeString.ToString());
         }
 
         private void TryShoot(Direction dir)
